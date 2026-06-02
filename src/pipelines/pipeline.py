@@ -17,16 +17,16 @@ def create_pipeline(num_features, cat_features):
     # Categorical pipeline
     cat_pipeline = Pipeline([
         ("imputer", SimpleImputer(strategy="most_frequent")),
-        ("encoder", OneHotEncoder(handle_unknown="ignore"))
+        ("encoder", OneHotEncoder(handle_unknown="ignore",sparse_output=False))
     ])
 
-    # Combine with 
+    # Combine with ColumnTransformer
     preprocessor = ColumnTransformer([
         ("num", num_pipeline, num_features),
         ("cat", cat_pipeline, cat_features)
     ])
 
-    # Final pipeline ColumnTransformer
+    # Final pipeline
     pipeline = Pipeline([
         ("preprocessor", preprocessor),
         ("model", TransformedTargetRegressor(

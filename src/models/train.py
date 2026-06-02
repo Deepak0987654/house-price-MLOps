@@ -11,20 +11,20 @@ from sklearn.ensemble import RandomForestRegressor
 from xgboost import XGBRegressor
 from lightgbm import LGBMRegressor
 
-from src.pipelines.pipeline import create_pipeline  # your pipeline
+from src.pipelines.pipeline import create_pipeline
 
 import joblib
 from sklearn.base import clone
 from pathlib import Path
-import os
 
 # Load data
 df = pd.read_csv("data/raw/train.csv")
 
+# Split features
 X = df.drop("SalePrice", axis=1)
 y = df["SalePrice"]
 
-# Split
+# Train-test split
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
 )
@@ -50,10 +50,11 @@ mlflow.set_experiment("house-price-prediction")
 best_rmse = float("inf")
 best_pipeline = None
 best_model_name = None
+best_run_id = None
 
 for name, model in models.items():
 
-    with mlflow.start_run(run_name=name):
+    with mlflow.start_run(run_name=name) as run:
 
         current_pipeline = clone(pipeline)
 
@@ -82,13 +83,28 @@ for name, model in models.items():
             best_rmse = rmse
             best_pipeline = current_pipeline
             best_model_name = name
+            best_run_id = run.info.run_id
 
 print(f"\n✅ Best Model: {best_model_name} with RMSE: {best_rmse}")
+
+# Save best model
 BASE_DIR = Path(__file__).resolve().parent.parent.parent  # go to project root
 ARTIFACTS_DIR = BASE_DIR / "artifacts"
-
 ARTIFACTS_DIR.mkdir(exist_ok=True)
 
 joblib.dump(best_pipeline, ARTIFACTS_DIR / "best_model.pkl")
+
+joblib.dump(X_train.columns.tolist(), ARTIFACTS_DIR / "features.pkl")
+
+defaults = {}
+for col in X_train.columns:
+    if X_train[col].dtype == "object":
+        defaults[col] = X_train[col].mode()[0]
+    else:
+        defaults[col] = X_train[col].median()
+
+joblib.dump(defaults, ARTIFACTS_DIR / "defaults.pkl")
+
+joblib.dump(best_run_id, ARTIFACTS_DIR / "model_version.pkl")
 
 print("Saved at:", ARTIFACTS_DIR / "best_model.pkl")
