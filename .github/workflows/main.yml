@@ -57,4 +57,4 @@ jobs:
       # 9. Push Image
       - name: Push Docker image
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/deepakmahto0987/house-price-mlops:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/deepakmahto0987/house-price-predict:latest
