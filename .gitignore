@@ -6,13 +6,6 @@ venv/
 __pycache__/
 *.pyc
 
-# Ignore model artifacts
-artifacts/
-
-# ML Models
-*.pkl
-*.joblib
-
 # MLflow
 mlflow.db
 mlruns/
