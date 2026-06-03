@@ -5,3 +5,4 @@ End-to-end ML pipeline with:
 - MLflow tracking
 - FastAPI deployment
 - Docker + CI/CD
+- Render
