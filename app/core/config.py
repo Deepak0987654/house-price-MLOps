@@ -1,10 +1,14 @@
-import os
+from pathlib import Path
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Go to project root (/app)
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-MODEL_PATH = os.path.join(BASE_DIR, "..", "artifacts", "best_model.pkl")
-FEATURES_PATH = os.path.join(BASE_DIR, "..", "artifacts", "features.pkl")
-DEFAULTS_PATH = os.path.join(BASE_DIR, "..", "artifacts", "defaults.pkl")
-MODEL_VERSION_PATH = os.path.join(BASE_DIR, "..", "artifacts", "model_version.pkl")
+MODEL_PATH = BASE_DIR / "artifacts" / "best_model.pkl"
+FEATURES_PATH = BASE_DIR / "artifacts" / "features.pkl"
+DEFAULTS_PATH = BASE_DIR / "artifacts" / "defaults.pkl"
+MODEL_VERSION_PATH = BASE_DIR / "artifacts" / "model_version.pkl"
+
+print("MODEL PATH:", MODEL_PATH)
+print("EXISTS:", MODEL_PATH.exists())
 
 CURRENT_YEAR = 2026
